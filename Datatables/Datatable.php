@@ -745,7 +745,7 @@ class Datatable
         }
 
         $qb->setMaxResults(null)->setFirstResult(null);
-        
+
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
     
@@ -755,12 +755,14 @@ class Datatable
     public function getCountFilteredResults()
     {
         $qb = clone $this->qb;
+
         $qb->select('count(distinct ' . $this->tableName . '.' . $this->rootEntityIdentifier . ')');
-        $this->setAssociations($qb);
+
+//        $this->setAssociations($qb);
+        
         $this->setWhere($qb);
 
         $qb->setMaxResults(null)->setFirstResult(null);
-
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
