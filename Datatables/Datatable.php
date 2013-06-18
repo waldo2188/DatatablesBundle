@@ -736,6 +736,7 @@ class Datatable
     public function getCountAllResults()
     {
         $qb = clone $this->qb;
+        $qb->resetDQLPart("orderBy")->resetDQLPart("groupBy");
         $qb->select('count(' . $this->tableName . '.' . $this->rootEntityIdentifier . ')');
 
         if (!empty($this->callbacks['WhereBuilder']) && $this->hideFilteredCount)  {
@@ -755,7 +756,7 @@ class Datatable
     public function getCountFilteredResults()
     {
         $qb = clone $this->qb;
-
+        $qb->resetDQLPart("orderBy")->resetDQLPart("groupBy");
         $qb->select('count(distinct ' . $this->tableName . '.' . $this->rootEntityIdentifier . ')');
 
 //        $this->setAssociations($qb);
@@ -763,17 +764,15 @@ class Datatable
         $this->setWhere($qb);
 
         $qb->setMaxResults(null)->setFirstResult(null);
+
         return $this->getSingleIntScalarResult($qb);
     }
 
     private function getSingleIntScalarResult($qb)
     {
         if(($res = $qb->getQuery()->getResult()) != null) {
-            if(is_array($res)) {
-                return (int) array_shift($res);
-            } else {
-                return (int) $res;
-            }
+
+            return $qb->getQuery()->getSingleScalarResult();
         }
         return 0;
     }
