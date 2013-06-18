@@ -746,7 +746,7 @@ class Datatable
 
         $qb->setMaxResults(null)->setFirstResult(null);
 
-        return (int) $qb->getQuery()->getSingleScalarResult();
+        return $this->getSingleIntScalarResult($qb);
     }
     
     /**
@@ -763,7 +763,19 @@ class Datatable
         $this->setWhere($qb);
 
         $qb->setMaxResults(null)->setFirstResult(null);
-        return (int) $qb->getQuery()->getSingleScalarResult();
+        return $this->getSingleIntScalarResult($qb);
+    }
+
+    private function getSingleIntScalarResult($qb)
+    {
+        if(($res = $qb->getQuery()->getResult()) != null) {
+            if(is_array($res)) {
+                return (int) array_shift($res);
+            } else {
+                return (int) $res;
+            }
+        }
+        return 0;
     }
 
     /**
