@@ -761,7 +761,7 @@ class Datatable
 
 //        $this->setAssociations($qb);
         
-        $this->setWhere($qb);
+ //       $this->setWhere($qb);
 
         $qb->setMaxResults(null)->setFirstResult(null);
 
