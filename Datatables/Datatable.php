@@ -735,19 +735,23 @@ class Datatable
      */
     public function getCountAllResults()
     {
-        $qb = clone $this->qb;
-        $qb->resetDQLPart("orderBy")->resetDQLPart("groupBy");
-        $qb->select('count(' . $this->tableName . '.' . $this->rootEntityIdentifier . ')');
+        if($this->hideFilteredCount) {
+            return $this->getCountFilteredResults();
+        } else {
+            $qb = clone $this->qb;
+            $qb->resetDQLPart("orderBy")->resetDQLPart("groupBy");
+            $qb->select('count(' . $this->tableName . '.' . $this->rootEntityIdentifier . ')');
 
-        if (!empty($this->callbacks['WhereBuilder']) && $this->hideFilteredCount)  {
-            foreach ($this->callbacks['WhereBuilder'] as $callback) {
-                $callback($qb);
+            if (!empty($this->callbacks['WhereBuilder']) && $this->hideFilteredCount)  {
+                foreach ($this->callbacks['WhereBuilder'] as $callback) {
+                    $callback($qb);
+                }
             }
+
+            $qb->setMaxResults(null)->setFirstResult(null);
+
+            return $this->getSingleIntScalarResult($qb);
         }
-
-        $qb->setMaxResults(null)->setFirstResult(null);
-
-        return $this->getSingleIntScalarResult($qb);
     }
     
     /**
